@@ -2,14 +2,15 @@
 /*
 Plugin Name: Webphone Plugin for sipgate.io
 Plugin URI:  https://github.com/BlackMac/webphone-wordpress
-Description: Embeds the sipgate.io Phone in a wordpress post : [sipgate_webphone:CLIENT_ID]
-Version:     20170817
+Description: Embeds the sipgate.io Phone in a wordpress post : [sipgate_webphone clientid=CLIENT_ID]
+Version:     20170818
 Author:      Stefan Lange-Hegermann
 Author URI:  https://www.stefanlh.de/
 License:     MIT
 */
 
-function insert_sipgate_webphone($text) {
+function sipgate_webphone_func($atts) {
+    $clientid = $atts['clientid'];
     $id = uniqid();
     $sipgate_code = '
     <script src="https://phone.sipgate.com/static/js/webphone.js"></script>
@@ -18,11 +19,11 @@ function insert_sipgate_webphone($text) {
     var webphone = new SipgateWebphone();
     webphone.init({
     container: document.getElementById("sipgate-webphone-container-'.$id.'"),
-    clientId: "$1"
+    clientId: "'.$clientid.'"
     });
     </script>';
 
-    return preg_replace("/\[sipgate_webphone\:([a-zA-Z_-]*)\]/", $sipgate_code, $text);
+    return $sipgate_code;
 }
 
-add_filter( 'the_content', 'insert_sipgate_webphone' );
+add_shortcode( 'sipgate_webphone', 'sipgate_webphone_func' );
